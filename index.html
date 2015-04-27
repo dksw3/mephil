@@ -1,0 +1,553 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="usage for wheelnav.js from gabor berkesi" />
+    <meta name="keywords" content="profil menu" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="favicon.png">
+
+    <title>Mefil - my profil</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+
+    <script src="js/raphael.min.js"></script>
+    <script src="js/raphael.icons.min.js"></script>
+    <script src="js/wheelnav.min.js"></script>
+    <script src="js/documentation.min.js"></script>
+    <script type="text/javascript">
+
+        var tabWheel;
+        var pieWheel;
+        var navWheel;
+
+        window.onload = function () {
+
+            createNavBar("", "ProfilSwitcher");
+
+            //Default wheel
+            tabWheel = new wheelnav("tabWheel");
+            //tabWheel.centerY = 145;
+            //tabWheel.wheelRadius = 115;
+            //tabWheel.navAngle = 45;
+
+            if (document.documentElement.clientWidth < 480) {
+                tabWheel.navAngle = 90;
+            }
+
+            tabWheel.colors = new Array("#2b9464");
+            tabWheel.titleFont = "20px Helvetica, Arial, sans-serif";
+
+            tabWheel.animateeffect = "easeOut";
+            tabWheel.animatetime = 700;
+
+            tabWheel.slicePathCustom = slicePath().DonutSliceCustomization();
+            tabWheel.slicePathCustom.minRadiusPercent = 0.2;
+            tabWheel.slicePathCustom.maxRadiusPercent = 0.9472;
+            tabWheel.sliceSelectedPathCustom = slicePath().DonutSliceCustomization();
+            tabWheel.sliceSelectedPathCustom.minRadiusPercent = 0.2;
+            tabWheel.sliceSelectedPathCustom.maxRadiusPercent = 0.8472;
+            tabWheel.slicePathFunction = slicePath().DonutSlice;
+            //tabWheel.sliceSelectedPathFunction = slicePath().DonutSlice;
+            //tabWheel.sliceSelectedTransformFunction = sliceTransform().MoveMiddleTransform;
+            //tabWheel.sliceSelectedTransformCustom = sliceTransform().sliceTransformCustomization();
+            //tabWheel.sliceSelectedTransformCustom.scaleString = "s1.5";
+
+            tabWheel.rotateRound = true;
+            tabWheel.initWheel(["Daniel", "Emil", "leinadlime", "rafiki"]);
+
+            tabWheel.navItems[3].sliceSelectedTransformFunction = sliceTransform().RotateTitleTransform;
+
+            tabWheel.slicePathAttr = { fill: "#2f7656", stroke: "#E7E7E7", "stroke-width": 0, cursor: 'pointer' };
+            tabWheel.sliceHoverAttr = { fill: "#2b9464", stroke: "#E7E7E7", "stroke-width": 0, cursor: 'pointer' };
+            tabWheel.sliceSelectedAttr = { fill: "#2b9464", stroke: "#E7E7E7", "stroke-width": 0, cursor: 'default' };
+
+            tabWheel.titleAttr = { font: tabWheel.titleFont, fill: "#080808", stroke: "none", cursor: 'pointer' };
+            tabWheel.titleHoverAttr = { font: tabWheel.titleFont, fill: "#EEE", cursor: 'pointer', stroke: "none" };
+            tabWheel.titleSelectedAttr = { font: tabWheel.titleFont, fill: "#EEE", cursor: 'default' };
+
+            tabWheel.createWheel();
+
+            
+            createTabHandler(tabWheel.navItems[0].navItem, "tabDefaultNav", "tabDefault");
+            createTabHandler(tabWheel.navItems[1].navItem, "tabDefaultNav", "tabJS");
+            createTabHandler(tabWheel.navItems[2].navItem, "tabDefaultNav", "tabCSS");
+            createTabHandler(tabWheel.navItems[3].navItem, "tabDefaultNav", "tabSVG");
+
+          
+            //Sub menu
+            createSubMenu();
+            
+                    };
+
+        function createSubMenu() {
+
+            this.wheelnavMenu = new wheelnav("subWheel");
+
+            this.subMenuRadius = this.wheelnavMenu.wheelRadius;
+
+            this.wheelnavMenu.slicePathFunction = slicePath().DonutSlice;
+            this.wheelnavMenu.slicePathCustom = new DonutSliceCustomization();
+            this.wheelnavMenu.slicePathCustom.minRadiusPercent = 0.3;
+            this.wheelnavMenu.slicePathCustom.maxRadiusPercent = 0.65;
+            this.wheelnavMenu.sliceSelectedPathFunction = slicePath().DonutSlice;
+            this.wheelnavMenu.sliceSelectedPathCustom = new DonutSliceCustomization();
+            this.wheelnavMenu.sliceSelectedPathCustom.minRadiusPercent = 0.3;
+            this.wheelnavMenu.sliceSelectedPathCustom.maxRadiusPercent = 0.65;
+
+            this.wheelnavMenu.colors = new Array("#FFF");
+
+            this.wheelnavSubMenu = new wheelnav("subWheelMenu", this.wheelnavMenu.raphael);
+
+            this.wheelnavSubMenu.slicePathFunction = slicePath().DonutSlice;
+            this.wheelnavSubMenu.slicePathCustom = new DonutSliceCustomization();
+            this.wheelnavSubMenu.slicePathCustom.minRadiusPercent = 0.65;
+            this.wheelnavSubMenu.slicePathCustom.maxRadiusPercent = 1;
+            this.wheelnavSubMenu.sliceSelectedPathFunction = slicePath().DonutSlice;
+            this.wheelnavSubMenu.sliceSelectedPathCustom = new DonutSliceCustomization();
+            this.wheelnavSubMenu.sliceSelectedPathCustom.minRadiusPercent = 0.65;
+            this.wheelnavSubMenu.sliceSelectedPathCustom.maxRadiusPercent = 1;
+
+            this.wheelnavSubMenu.colors = new Array("#FFF");
+            this.wheelnavSubMenu.currentPercent = 0.01;
+            this.wheelnavSubMenu.minPercent = 0.6;
+
+            this.wheelnavMenu.clickModeRotate = false;
+            this.wheelnavMenu.navAngle = -90;
+
+            this.wheelnavSubMenu.clickModeRotate = false;
+            this.wheelnavSubMenu.navAngle = -90;
+            this.wheelnavSubMenu.multiSelect = true;
+
+            this.wheelnavMenu.createWheel(["tags", "profil", "form", "schrift", "grenze"]);
+            this.wheelnavSubMenu.createWheel([null, "show", "erotik", "freizeit", "business", icon.opensource, icon.gear, icon.flickr, "12px", "15px", "18px", "thin", "thick", "none", "hide"]);
+
+            var thisWheelnavMenu = this.wheelnavMenu;
+            var thisWheelnavSubMenu = this.wheelnavSubMenu;
+
+            this.wheelnavMenu.navItems[0].navigateFunction = function () { showSubMenu(thisWheelnavSubMenu, 0); };
+            this.wheelnavMenu.navItems[1].navigateFunction = function () { showSubMenu(thisWheelnavSubMenu, 2); };
+            this.wheelnavMenu.navItems[2].navigateFunction = function () { showSubMenu(thisWheelnavSubMenu, 5); };
+            this.wheelnavMenu.navItems[3].navigateFunction = function () { showSubMenu(thisWheelnavSubMenu, 8); };
+            this.wheelnavMenu.navItems[4].navigateFunction = function () { showSubMenu(thisWheelnavSubMenu, 11); };
+
+            this.wheelnavSubMenu.navItems[1].navigateFunction = function () { showAllSubMenu(); };
+            this.wheelnavSubMenu.navItems[14].navigateFunction = function () { hideAllSubMenu(); };
+
+            this.wheelnavSubMenu.navItems[2].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "color1"); };
+            this.wheelnavSubMenu.navItems[3].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "color2"); };
+            this.wheelnavSubMenu.navItems[4].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "color3"); };
+
+            this.wheelnavSubMenu.navItems[5].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "shape1"); };
+            this.wheelnavSubMenu.navItems[6].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "shape2"); };
+            this.wheelnavSubMenu.navItems[7].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "shape3"); };
+
+            this.wheelnavSubMenu.navItems[8].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "font1"); };
+            this.wheelnavSubMenu.navItems[9].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "font2"); };
+            this.wheelnavSubMenu.navItems[10].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "font3"); };
+
+            this.wheelnavSubMenu.navItems[11].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "stroke1"); };
+            this.wheelnavSubMenu.navItems[12].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "stroke2"); };
+            this.wheelnavSubMenu.navItems[13].navigateFunction = function () { refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "stroke3"); };
+            
+            refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "color3");
+            refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "shape1");
+            refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "font2");
+            refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, "stroke2");
+
+            this.wheelnavSubMenu.navItems[4].selected = true;
+            this.wheelnavSubMenu.navItems[5].selected = true;
+            this.wheelnavSubMenu.navItems[9].selected = true;
+            this.wheelnavSubMenu.navItems[12].selected = true;
+            showSubMenu(thisWheelnavSubMenu, 0);
+        };
+
+        function showSubMenu(thisWheelnavSubMenu, itemIndex) {
+
+            hideAllSubMenu();
+
+            thisWheelnavSubMenu.slicePathAttr = { opacity: 1, fill: "#FFF", "stroke-width": menuStrokeWidth, stroke: menuStroke };
+            thisWheelnavSubMenu.sliceHoverAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke };
+            thisWheelnavSubMenu.sliceSelectedAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke };
+
+            this.wheelnavSubMenu.navItems[itemIndex].slicePathAttr = { opacity: 1, fill: "#FFF", "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            this.wheelnavSubMenu.navItems[itemIndex].sliceHoverAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'pointer' };
+            this.wheelnavSubMenu.navItems[itemIndex].sliceSelectedAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            this.wheelnavSubMenu.navItems[itemIndex].titleAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'default', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex].titleHoverAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'pointer', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex].titleSelectedAttr = { opacity: 1, font: menuFont, fill: "#FFF", cursor: 'default', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex].refreshNavItem();
+
+            this.wheelnavSubMenu.navItems[itemIndex + 1].slicePathAttr = { opacity: 1, fill: "#FFF", "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            this.wheelnavSubMenu.navItems[itemIndex + 1].sliceHoverAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'pointer' };
+            this.wheelnavSubMenu.navItems[itemIndex + 1].sliceSelectedAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            this.wheelnavSubMenu.navItems[itemIndex + 1].titleAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'default', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex + 1].titleHoverAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'pointer', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex + 1].titleSelectedAttr = { opacity: 1, font: menuFont, fill: "#FFF", cursor: 'default', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex + 1].refreshNavItem();
+
+            if (itemIndex == 0) {
+                itemIndex = 12;
+            }
+
+            this.wheelnavSubMenu.navItems[itemIndex + 2].slicePathAttr = { opacity: 1, fill: "#FFF", "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            this.wheelnavSubMenu.navItems[itemIndex + 2].sliceHoverAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'pointer' };
+            this.wheelnavSubMenu.navItems[itemIndex + 2].sliceSelectedAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            this.wheelnavSubMenu.navItems[itemIndex + 2].titleAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'default', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex + 2].titleHoverAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'pointer', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex + 2].titleSelectedAttr = { opacity: 1, font: menuFont, fill: "#FFF", cursor: 'default', stroke: "none" };
+            this.wheelnavSubMenu.navItems[itemIndex + 2].refreshNavItem();
+        }
+
+        var menuColor;
+        var menuStroke;
+        var menuStrokeWidth;
+        var menuFont = '100 18px Helvetica, Arial, sans-serif';
+
+        function refreshAllSubMenu(thisWheelnavMenu, thisWheelnavSubMenu, itemIndex) {
+
+            if (thisWheelnavMenu.slicePathAttr !== null) {
+                menuColor = thisWheelnavMenu.slicePathAttr.fill;
+            }
+            else {
+                menuColor = "#d14d28";
+            }
+            if (thisWheelnavMenu.slicePathAttr !== null) {
+                menuStroke = thisWheelnavMenu.slicePathAttr.stroke;
+            }
+            else {
+                menuStroke = "#e7e7e7";
+            }
+            if (thisWheelnavMenu.slicePathAttr !== null) {
+                menuStrokeWidth = thisWheelnavMenu.slicePathAttr["stroke-width"];
+            }
+            else {
+                menuStrokeWidth = "1px";
+            }
+
+            switch (itemIndex) {
+                case "color1":
+                    thisWheelnavSubMenu.navItems[3].selected = false;
+                    thisWheelnavSubMenu.navItems[4].selected = false;
+                    if (this.wheelnavSubMenu.navItems[2].selected === true) {
+                        this.wheelnavSubMenu.navItems[2].selected = false;
+                    }
+                    menuColor = "#d14d28";
+
+                    break;
+                case "color2":
+                    thisWheelnavSubMenu.navItems[2].selected = false;
+                    thisWheelnavSubMenu.navItems[4].selected = false;
+                    if (this.wheelnavSubMenu.navItems[3].selected === true) {
+                        this.wheelnavSubMenu.navItems[3].selected = false;
+                    }
+                    menuColor = "#2b9464";
+
+                    break;
+                case "color3":
+                    thisWheelnavSubMenu.navItems[2].selected = false;
+                    thisWheelnavSubMenu.navItems[3].selected = false;
+                    if (this.wheelnavSubMenu.navItems[4].selected === true) {
+                        this.wheelnavSubMenu.navItems[4].selected = false;
+                    }
+                    menuColor = "#4593e3";
+
+                    break;
+                case "shape1":
+                    wheelnavSubMenu.navItems[6].selected = false;
+                    wheelnavSubMenu.navItems[7].selected = false;
+                    if (this.wheelnavSubMenu.navItems[5].selected === true) {
+                        this.wheelnavSubMenu.navItems[5].selected = false;
+                    }
+                    thisWheelnavMenu.wheelRadius = this.subMenuRadius;
+                    thisWheelnavMenu.slicePathFunction = slicePath().DonutSlice;
+                    thisWheelnavMenu.slicePathCustom = new DonutSliceCustomization();
+                    thisWheelnavMenu.slicePathCustom.minRadiusPercent = 0.3;
+                    thisWheelnavMenu.slicePathCustom.maxRadiusPercent = 0.65;
+                    thisWheelnavMenu.sliceSelectedPathFunction = slicePath().DonutSlice;
+                    thisWheelnavMenu.sliceSelectedPathCustom = new DonutSliceCustomization();
+                    thisWheelnavMenu.sliceSelectedPathCustom.minRadiusPercent = 0.3;
+                    thisWheelnavMenu.sliceSelectedPathCustom.maxRadiusPercent = 0.65;
+                    thisWheelnavSubMenu.wheelRadius = this.subMenuRadius;
+                    thisWheelnavSubMenu.slicePathFunction = slicePath().DonutSlice;
+                    thisWheelnavSubMenu.slicePathCustom = new DonutSliceCustomization();
+                    thisWheelnavSubMenu.slicePathCustom.minRadiusPercent = 0.65;
+                    thisWheelnavSubMenu.slicePathCustom.maxRadiusPercent = 0.99;
+                    thisWheelnavSubMenu.sliceSelectedPathFunction = slicePath().DonutSlice;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom = new DonutSliceCustomization();
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.minRadiusPercent = 0.65;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.maxRadiusPercent = 0.99;
+                    break;
+                case "shape2":
+                    thisWheelnavSubMenu.navItems[5].selected = false;
+                    thisWheelnavSubMenu.navItems[7].selected = false;
+                    if (this.wheelnavSubMenu.navItems[6].selected === true) {
+                        this.wheelnavSubMenu.navItems[6].selected = false;
+                    }
+                    thisWheelnavMenu.wheelRadius = this.subMenuRadius * 0.6;
+                    thisWheelnavMenu.slicePathFunction = slicePath().PieSlice;
+                    thisWheelnavMenu.slicePathCustom = new PieSliceCustomization();
+                    thisWheelnavMenu.sliceSelectedPathFunction = slicePath().PieSlice;
+                    thisWheelnavMenu.sliceSelectedPathCustom = new PieSliceCustomization();
+                    thisWheelnavSubMenu.wheelRadius = this.subMenuRadius * 1.1;
+                    thisWheelnavSubMenu.slicePathFunction = slicePath().PieSlice;
+                    thisWheelnavSubMenu.slicePathCustom = new PieSliceCustomization();
+                    thisWheelnavSubMenu.slicePathCustom.startRadiusPercent = 0.55;
+                    thisWheelnavSubMenu.slicePathCustom.titleRadiusPercent = 0.85;
+                    thisWheelnavSubMenu.sliceSelectedPathFunction = slicePath().PieSlice;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom = new PieSliceCustomization();
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.startRadiusPercent = 0.55;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.titleRadiusPercent = 0.85;
+                    break;
+                case "shape3":
+                    thisWheelnavSubMenu.navItems[5].selected = false;
+                    thisWheelnavSubMenu.navItems[6].selected = false;
+                    if (this.wheelnavSubMenu.navItems[7].selected === true) {
+                        this.wheelnavSubMenu.navItems[7].selected = false;
+                    }
+                    thisWheelnavMenu.wheelRadius = this.subMenuRadius;
+                    thisWheelnavMenu.slicePathFunction = slicePath().MenuSliceWithoutLine;
+                    thisWheelnavMenu.slicePathCustom = new MenuSliceCustomization();
+                    thisWheelnavMenu.slicePathCustom.titleRadiusPercent = 0.35;
+                    thisWheelnavMenu.slicePathCustom.menuRadius = 40;
+                    thisWheelnavMenu.sliceSelectedPathFunction = slicePath().MenuSliceWithoutLine;
+                    thisWheelnavMenu.sliceSelectedPathCustom = new MenuSliceCustomization();
+                    thisWheelnavMenu.sliceSelectedPathCustom.titleRadiusPercent = 0.35;
+                    thisWheelnavMenu.sliceSelectedPathCustom.menuRadius = 40;
+                    thisWheelnavSubMenu.wheelRadius = this.subMenuRadius;
+                    thisWheelnavSubMenu.slicePathFunction = slicePath().MenuSliceWithoutLine;
+                    thisWheelnavSubMenu.slicePathCustom = new MenuSliceCustomization();
+                    thisWheelnavSubMenu.slicePathCustom.titleRadiusPercent = 0.75;
+                    thisWheelnavSubMenu.slicePathCustom.lineBaseRadiusPercent = 0.3;
+                    thisWheelnavSubMenu.slicePathCustom.menuRadius = 35;
+                    thisWheelnavSubMenu.sliceSelectedPathFunction = slicePath().MenuSliceWithoutLine;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom = new MenuSliceCustomization();
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.titleRadiusPercent = 0.75;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.lineBaseRadiusPercent = 0.3;
+                    thisWheelnavSubMenu.sliceSelectedPathCustom.menuRadius = 35;
+                    break;
+                case "font1":
+                    thisWheelnavSubMenu.navItems[9].selected = false;
+                    thisWheelnavSubMenu.navItems[10].selected = false;
+                    if (this.wheelnavSubMenu.navItems[8].selected === true) {
+                        this.wheelnavSubMenu.navItems[8].selected = false;
+                    }
+                    menuFont = '100 18px Helvetica, Arial, sans-serif';
+                    break;
+                case "font2":
+                    thisWheelnavSubMenu.navItems[8].selected = false;
+                    thisWheelnavSubMenu.navItems[10].selected = false;
+                    if (this.wheelnavSubMenu.navItems[9].selected === true) {
+                        this.wheelnavSubMenu.navItems[9].selected = false;
+                    }
+                    menuFont = '100 20px Helvetica, Arial, sans-serif';
+                    break;
+                case "font3":
+                    thisWheelnavSubMenu.navItems[8].selected = false;
+                    thisWheelnavSubMenu.navItems[9].selected = false;
+                    if (this.wheelnavSubMenu.navItems[10].selected === true) {
+                        this.wheelnavSubMenu.navItems[10].selected = false;
+                    }
+                    menuFont = '100 22px Helvetica, Arial, sans-serif';
+                    break;
+                case "stroke1":
+                    thisWheelnavSubMenu.navItems[12].selected = false;
+                    thisWheelnavSubMenu.navItems[13].selected = false;
+                    if (this.wheelnavSubMenu.navItems[11].selected === true) {
+                        this.wheelnavSubMenu.navItems[11].selected = false;
+                    }
+                    menuStroke = "#E7E7E7";
+                    menuStrokeWidth = "1px";
+                    break;
+                case "stroke2":
+                    thisWheelnavSubMenu.navItems[11].selected = false;
+                    thisWheelnavSubMenu.navItems[13].selected = false;
+                    if (this.wheelnavSubMenu.navItems[12].selected === true) {
+                        this.wheelnavSubMenu.navItems[12].selected = false;
+                    }
+                    menuStroke = "#E7E7E7";
+                    menuStrokeWidth = "3px";
+                    break;
+                case "stroke3":
+                    thisWheelnavSubMenu.navItems[11].selected = false;
+                    thisWheelnavSubMenu.navItems[12].selected = false;
+                    if (this.wheelnavSubMenu.navItems[13].selected === true) {
+                        this.wheelnavSubMenu.navItems[13].selected = false;
+                    }
+                    menuStroke = "none";
+                    menuStrokeWidth = "0px";
+                    break;
+            }
+
+            thisWheelnavMenu.slicePathAttr = { fill: menuColor, opacity: 1, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            thisWheelnavMenu.sliceHoverAttr = { fill: menuColor, opacity: 0.9, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'pointer' };
+            thisWheelnavMenu.sliceSelectedAttr = { fill: menuColor, opacity: 1, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            thisWheelnavSubMenu.slicePathAttr = { fill: "#FFF", "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            thisWheelnavSubMenu.sliceHoverAttr = { fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'pointer' };
+            thisWheelnavSubMenu.sliceSelectedAttr = { fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+            thisWheelnavMenu.titleAttr = { font: menuFont, fill: "#111", cursor: 'default', stroke: "none" };
+            thisWheelnavMenu.titleHoverAttr = { font: menuFont, fill: "#111", cursor: 'pointer', stroke: "none" };
+            thisWheelnavMenu.titleSelectedAttr = { font: menuFont, fill: "#FFF", cursor: 'default', stroke: "none" };
+            thisWheelnavSubMenu.titleAttr = { font: menuFont, fill: "#111", cursor: 'default', stroke: "none" };
+            thisWheelnavSubMenu.titleHoverAttr = { font: menuFont, fill: "#111", cursor: 'pointer', stroke: "none" };
+            thisWheelnavSubMenu.titleSelectedAttr = { font: menuFont, fill: "#FFF", cursor: 'default', stroke: "none" };
+
+            thisWheelnavMenu.refreshWheel(true);
+            thisWheelnavSubMenu.refreshWheel(true);
+        };
+
+        function hideAllSubMenu() {
+            this.wheelnavSubMenu.navItems[1].selected = false;
+            this.wheelnavSubMenu.navItems[14].selected = true;
+
+            for (var itemIndex = 0; itemIndex < this.wheelnavSubMenu.navItems.length; itemIndex++) {
+                this.wheelnavSubMenu.navItems[itemIndex].slicePathAttr = { opacity: 0 };
+                this.wheelnavSubMenu.navItems[itemIndex].sliceHoverAttr = { opacity: 0 };
+                this.wheelnavSubMenu.navItems[itemIndex].sliceSelectedAttr = { opacity: 0 };
+                this.wheelnavSubMenu.navItems[itemIndex].titleAttr = { opacity: 0 };
+                this.wheelnavSubMenu.navItems[itemIndex].titleHoverAttr = { opacity: 0 };
+                this.wheelnavSubMenu.navItems[itemIndex].titleSelectedAttr = { opacity: 0 };
+                this.wheelnavSubMenu.navItems[itemIndex].refreshNavItem();
+            }
+        }
+
+        function showAllSubMenu() {
+            this.wheelnavSubMenu.navItems[14].selected = false;
+            if (this.wheelnavSubMenu.navItems[1].selected === true) {
+                this.wheelnavSubMenu.navItems[1].selected = false;
+            }
+
+            for (var itemIndex = 0; itemIndex < this.wheelnavSubMenu.navItems.length; itemIndex++) {
+                this.wheelnavSubMenu.navItems[itemIndex].slicePathAttr = { opacity: 1, fill: "#FFF", "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+                this.wheelnavSubMenu.navItems[itemIndex].sliceHoverAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'pointer' };
+                this.wheelnavSubMenu.navItems[itemIndex].sliceSelectedAttr = { opacity: 1, fill: menuColor, "stroke-width": menuStrokeWidth, stroke: menuStroke, cursor: 'default' };
+                this.wheelnavSubMenu.navItems[itemIndex].titleAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'default', stroke: "none" };
+                this.wheelnavSubMenu.navItems[itemIndex].titleHoverAttr = { opacity: 1, font: menuFont, fill: "#111", cursor: 'pointer', stroke: "none" };
+                this.wheelnavSubMenu.navItems[itemIndex].titleSelectedAttr = { opacity: 1, font: menuFont, fill: "#FFF", cursor: 'default', stroke: "none" };
+                this.wheelnavSubMenu.navItems[itemIndex].refreshNavItem();
+            }
+        }
+
+        function setMarker() {
+            if (navWheel.selectedNavItemIndex === 3) {
+                navWheel.navigateWheel(0);
+            }
+            else {
+                navWheel.navigateWheel(3);
+            }
+        };
+    </script>
+
+</head>
+<!-- NAVBAR
+================================================== -->
+<body>
+    <div id="wheelNavBar" class="navbar-wrapper">
+    </div>
+	
+
+    <div class="container">
+	<h1><u>MEPHIL - my profil structured like i like // my schizophrenic me</u></h1>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Profil-Switcher<small> - welches Profil möchtest du wählen? </small></h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container marketing">
+
+        <!-- START THE FEATURETTES -->
+        <!--TabMenu-->
+
+        <hr class="featurette-divider-examples-hide" id="tabWheelHr" />
+
+        <div class="row featurette">
+            <div class="col-md-5">
+                <div id="tabWheel" class="wheelNav400"></div>
+            </div>
+            <div class="col-md-7">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="tabDefaultNav" hidden="hidden">
+                    <li class="active"><a href="#tabDefault" data-toggle="tab">Daniel</a></li>
+                    <li><a href="#tabJS" data-toggle="tab">Emil</a></li>
+                    <li><a href="#tabCSS" data-toggle="tab">leinadlime</a></li>
+                    <li><a href="#tabSVG" data-toggle="tab">rafiki</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="tabDefault">
+                        <h2 class="featurette-heading">
+				Das Startprofil "Daniel" ist mein Profil für öffentliche Fachthemen und Geschäftsverbindungen
+                            <br />
+                        </h2>
+                    </div>
+                    <div class="tab-pane fade" id="tabJS">
+                        <h2 class="featurette-heading">
+                            Emil ist der kreative Webbanause.
+                        </h2>
+                    </div>
+                    <div class="tab-pane fade" id="tabCSS">
+                        <h2 class="featurette-heading">
+                            Leinadlime ist das Profil, das im Internet mich anonym vertritt und in SocialMedia auftreten kann, ohne direkte Verbindungen zu mir zu knüpfen.
+                        </h2>
+                    </div>
+                    <div class="tab-pane fade" id="tabSVG">
+                        <h2 class="featurette-heading">
+                            Rafiki kommt ins Spiel, wenn es etwas raffinierter sein muss.
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--PieMenu-->
+                <!--SubMenu-->
+        <hr class="featurette-divider-examples">
+
+        <div class="row featurette">
+            <div class="col-md-5">
+                <div id="subWheel" class="wheelNav400"></div>
+            </div>
+            <div class="col-md-7">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="Ul1" hidden="hidden">
+                    <li class="active"><a href="#tabPie" data-toggle="tab">Pie menu</a></li>
+                    <li><a href="#tabPie1" data-toggle="tab"></a></li>
+                    <li><a href="#tabPie2" data-toggle="tab"></a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="Div2">
+                        <h2 class="featurette-heading">Untermenus erlauben eine Verzweigung in Sub-Kategorien. Ggf lass sich damit anliegende Profile verbinden, jedoch liegt der Fokus auf den Grund-Sektoren.</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- /END THE FEATURETTES -->
+
+    </div><!-- /.container -->
+
+    <!-- FOOTER -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+</html>
